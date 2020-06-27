@@ -49,7 +49,7 @@ def is_triple(l):
         return False
 
 
-class check_card(object):
+class CheckCard(object):
     def __init__(self, input_list, home="", zimo="", mq="", baopai=0, my_wind="", last_ting="", peng_ke="", gang=0,
                  court_wind=31):
         self.input_list = sorted(input_list)
@@ -451,7 +451,7 @@ class check_card(object):
 
 
 if __name__ == '__main__':
-    c = check_card(
+    c = CheckCard(
         # [35, 35, 35, 36, 36, 36, 21, 21, 21, 31, 31, 34, 34, 34],
         # [1, 1, 1, 2, 3, 7, 7, 7, 8, 8, 8, 9, 9, 9],
         # [2, 2, 3, 3, 4, 4, 6, 6, 17, 7,18, 8, 19, 9],
