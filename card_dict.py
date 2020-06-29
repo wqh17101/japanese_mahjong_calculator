@@ -168,9 +168,8 @@ class CheckCard(object):
             return False
         flush_list = [item for item in self.card_group[1:] if is_flush(item)]
         if len(flush_list) >= 2:
-            start_list = [str(item[0])[-1] for item in flush_list]
-            for start in set(start_list):
-                if start_list.count(start) >= 2:
+            for item in set(flush_list):
+                if flush_list.count(item) >= 2:
                     print("一杯口")
                     self.success.append("一杯口")
                     self.fan = self.fan + 1
@@ -182,16 +181,16 @@ class CheckCard(object):
             return False
         flush_list = [item for item in self.card_group[1:] if is_flush(item)]
 
-        if len(flush_list) >= 4:
-            start_list = [str(item[0])[-1] for item in flush_list]
-            print(start_list)
-            for start in set(start_list):
-                if start_list.count(start) != 2:
-                    return False
-            print("二杯口")
-            self.success.append("二杯口")
-            self.fan = self.fan + 3
-            return True
+        if len(flush_list) == 4:
+            items = list(set(flush_list))
+            if len(items) == 2:
+                for item in items:
+                    if items.count(item) != 2:
+                        return False
+                print("二杯口")
+                self.success.append("二杯口")
+                self.fan = self.fan + 3
+                return True
         return False
 
     def check_yqtg(self):  # 一气通贯
@@ -424,6 +423,7 @@ class CheckCard(object):
                 self.check_cqdyj()
                 self.check_xsy()
         print(self.fan)
+        print(self.success)
 
     def caculate_fu(self):
         pass
@@ -453,10 +453,10 @@ class CheckCard(object):
 if __name__ == '__main__':
     c = CheckCard(
         # [35, 35, 35, 36, 36, 36, 21, 21, 21, 31, 31, 34, 34, 34],
-        # [1, 1, 1, 2, 3, 7, 7, 7, 8, 8, 8, 9, 9, 9],
+        [1, 1, 1, 2, 3, 7, 7, 7, 8, 8, 8, 9, 9, 9],
         # [2, 2, 3, 3, 4, 4, 6, 6, 17, 7,18, 8, 19, 9],
         # [1, 1, 9, 9, 31, 31, 32, 32, 35, 35, 36, 36, 33, 33],
-        [1, 1, 2, 2, 3, 3, 11, 11, 12, 12, 14, 14, 36, 36],
+        # [1, 1, 2, 2, 3, 3, 11, 11, 12, 12, 14, 14, 36, 36],
         last_ting=1, mq=1,
         my_wind=34)
 
