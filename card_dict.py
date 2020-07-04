@@ -1,4 +1,5 @@
 from functools import reduce
+import math
 
 CARD_POOL = {
     '万': list(range(1, 10)),
@@ -32,6 +33,23 @@ SHOW_DICT = {
 
 PAIRS = reduce(lambda x, y: x + y, CARD_POOL.values())
 
+CARD_FU_DICT = {
+    "自摸": 2 * 0,
+    "七对": 0,
+    "门清荣和": 10 * 0,
+    "幺九明刻": 4 * 0,
+    "幺九暗刻": 8 * 0,
+    "幺九明杠": 16 * 0,
+    "幺九暗杠": 32 * 0,
+    "中张明刻": 2 * 0,
+    "中张暗刻": 4 * 0,
+    "中张明杠": 8 * 0,
+    "中张暗杠": 16 * 0,
+    "雀头场风、自风、三元牌": 2 * 0,
+    "雀头双风牌": 4 * 0,
+    "单骑、边张、欠张": 2 * 0
+}
+
 
 def is_flush(l):
     l = sorted(list(l))
@@ -50,15 +68,29 @@ def is_triple(l):
 
 
 class CheckCard(object):
-    def __init__(self, input_list, home="", zimo="", mq="", baopai=0, my_wind="", last_ting="", peng_ke="", gang=0,
-                 court_wind=31):
+    def __init__(self, input_list,
+                 home="",
+                 zimo="",
+                 mq="",
+                 baopai=0,
+                 my_wind="",
+                 last_ting="",
+                 peng_ke="",
+                 gang=0,
+                 court_wind=31,
+                 input_fu=0,
+                 gk="",
+                 yf=""
+                 ):
         self.input_list = sorted(input_list)
         self.input_list_set = set(input_list)
-        self.fu = 20
+        self.fu = input_fu
         self.mq = mq
         self.home = home
         self.fan = baopai
         if zimo and mq:
+            self.fan = self.fan + 1
+        if gk or yf:
             self.fan = self.fan + 1
         self.card_group = []
         self.my_wind = my_wind
@@ -127,8 +159,7 @@ class CheckCard(object):
             if self.input_list.count(x) not in [2, 4]:
                 return False
         self.fan = self.fan + 2
-        self.fu = self.fu + 25
-        print("和牌：七对")
+        print("七对")
         self.success.append("七对")
         return True
 
@@ -426,6 +457,7 @@ class CheckCard(object):
         print(self.success)
 
     def caculate_fu(self):
+
         pass
 
     def calculate(self):
@@ -440,7 +472,7 @@ class CheckCard(object):
             base = 4000
         elif self.fan in [11, 12]:  # 三倍满
             base = 6000
-        else:  # 役满
+        elif self.fan > 13:  # 役满
             base = 8000
 
         if self.home:
@@ -448,6 +480,14 @@ class CheckCard(object):
         else:
             score = 4 * base
         return score
+
+
+def calculate_fu(card_type_dict=CARD_FU_DICT):
+    if card_type_dict.get("七对", 0):
+        return 25
+    base_fu = 20
+
+    return math.ceil(base_fu + sum(card_type_dict.values()) / 10) * 10
 
 
 if __name__ == '__main__':
