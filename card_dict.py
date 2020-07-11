@@ -79,8 +79,8 @@ class CheckCard(object):
                  gang=0,
                  court_wind=31,
                  input_fu=0,
-                 gk="",
-                 yf=""
+                 lingshangkaihua="",  # 岭上开花
+                 yifa=""  # 一发
                  ):
         self.input_list = sorted(input_list)
         self.input_list_set = set(input_list)
@@ -90,7 +90,9 @@ class CheckCard(object):
         self.fan = baopai
         if zimo and mq:
             self.fan = self.fan + 1
-        if gk or yf:
+        if lingshangkaihua:
+            self.fan = self.fan + 1
+        if yifa:
             self.fan = self.fan + 1
         self.card_group = []
         self.my_wind = my_wind
@@ -197,7 +199,7 @@ class CheckCard(object):
     def check_ybk(self):  # 一杯口
         if not self.mq:
             return False
-        flush_list = [item for item in self.card_group[1:] if is_flush(item)]
+        flush_list = [item[0] for item in self.card_group[1:] if is_flush(item)]
         if len(flush_list) >= 2:
             for item in set(flush_list):
                 if flush_list.count(item) >= 2:
@@ -210,7 +212,7 @@ class CheckCard(object):
     def check_ebk(self):  # 二杯口
         if not self.mq:
             return False
-        flush_list = [item for item in self.card_group[1:] if is_flush(item)]
+        flush_list = [item[0] for item in self.card_group[1:] if is_flush(item)]
 
         if len(flush_list) == 4:
             items = list(set(flush_list))
@@ -455,15 +457,15 @@ class CheckCard(object):
                 self.check_xsy()
         print(self.fan)
         print(self.success)
+        print(self.calculate())
 
     def caculate_fu(self):
 
         pass
 
     def calculate(self):
-        base = self.fu * 2 ** (self.fan + 2)
         if 1 <= self.fan <= 4:  # 满贯
-            base = 2000
+            base = self.fu * 2 ** (self.fan + 2)
         elif self.fan == 5:
             base = 2000
         elif self.fan in [6, 7]:  # 跳满
@@ -474,7 +476,8 @@ class CheckCard(object):
             base = 6000
         elif self.fan > 13:  # 役满
             base = 8000
-
+        else:
+            return "invalid fan"
         if self.home:
             score = 6 * base
         else:
@@ -486,8 +489,7 @@ def calculate_fu(card_type_dict=CARD_FU_DICT):
     if card_type_dict.get("七对", 0):
         return 25
     base_fu = 20
-
-    return math.ceil(base_fu + sum(card_type_dict.values()) / 10) * 10
+    return math.ceil((base_fu + sum(card_type_dict.values())) / 10) * 10
 
 
 if __name__ == '__main__':
@@ -498,6 +500,7 @@ if __name__ == '__main__':
         # [1, 1, 9, 9, 31, 31, 32, 32, 35, 35, 36, 36, 33, 33],
         # [1, 1, 2, 2, 3, 3, 11, 11, 12, 12, 14, 14, 36, 36],
         last_ting=1, mq=1,
-        my_wind=34)
+        my_wind=34,
+        input_fu=40)
 
     c.process()
